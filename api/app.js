@@ -15,8 +15,10 @@ const projectsFilePath = path.join(__dirname, 'data', 'projects.json');
 
 const loadProjects = () => {
     try {
-        // Check if the directory exists, create it if not
+        // Ensure the parent directory exists
+        console.log('Project file path:', projectsFilePath);
         const dir = path.dirname(projectsFilePath);
+        console.log('Directory path:', dir);
         if (!fs.existsSync(dir)) {
             fs.mkdirSync(dir, { recursive: true }); // Create directory and any missing parent directories
         }
@@ -34,6 +36,7 @@ const loadProjects = () => {
         return []; // In case of any other error, return an empty array
     }
 };
+
 
 function saveProjects(data) {
     if (!fs.existsSync(projectsFilePath)) {
