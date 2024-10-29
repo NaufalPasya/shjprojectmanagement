@@ -13,9 +13,14 @@ app.use(express.static('public'));
 const projectsFilePath = path.join(__dirname, 'data', 'projects.json');
 
 
-// Function to load projects from JSON file
 const loadProjects = () => {
     try {
+        // Check if the directory exists, create it if not
+        const dir = path.dirname(projectsFilePath);
+        if (!fs.existsSync(dir)) {
+            fs.mkdirSync(dir, { recursive: true }); // Create directory and any missing parent directories
+        }
+
         // Attempt to read the file
         const data = fs.readFileSync(projectsFilePath, 'utf-8');
         return JSON.parse(data);
