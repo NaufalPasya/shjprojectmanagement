@@ -1,0 +1,82 @@
+[
+  {
+    "id": 1,
+    "name": "first project",
+    "description": "test first project ",
+    "status": "Active",
+    "startDate": "2024-05-24",
+    "endDate": "2025-01-01",
+    "tasks": [
+      {
+        "name": "hehe",
+        "status": "Done"
+      },
+      {
+        "name": "task 3",
+        "status": "Done"
+      },
+      {
+        "name": "task 4",
+        "status": "Approval"
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "name": "second project",
+    "description": "the second project",
+    "status": "On Hold",
+    "startDate": "2024-10-31",
+    "endDate": "2025-01-24",
+    "tasks": [
+      {
+        "name": "siuu",
+        "status": "Pending"
+      },
+      {
+        "name": "heheboi",
+        "status": "Approval"
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "name": "third project",
+    "description": "test ketiga",
+    "status": "On Hold",
+    "startDate": "2024-10-19",
+    "endDate": "2024-10-31",
+    "tasks": [
+      {
+        "name": "test",
+        "status": "In Progress"
+      },
+      {
+        "name": "again",
+        "status": "Approval"
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "name": "fourth project",
+    "description": "test fourth project",
+    "status": "Planning",
+    "startDate": "2024-10-25",
+    "endDate": "2024-10-31",
+    "tasks": [
+      {
+        "name": "task1",
+        "status": "Pending"
+      },
+      {
+        "name": "task2",
+        "status": "To Do"
+      },
+      {
+        "name": "task3",
+        "status": "To Do"
+      }
+    ]
+  }
+]
