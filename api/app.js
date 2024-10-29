@@ -10,12 +10,13 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.set('views', path.join(__dirname, '../views'));
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
+const projectsFilePath = path.join(__dirname, 'data', 'projects.json');
 
 
 // Function to load projects from JSON file
 const loadProjects = () => {
     try {
-        const data = fs.readFileSync('./data/projects.json', 'utf-8');
+        const data = fs.readFileSync(projectsFilePath, 'utf-8');
         return JSON.parse(data);
     } catch (err) {
         return []; // If file doesn't exist or is corrupted, return an empty array
@@ -24,7 +25,7 @@ const loadProjects = () => {
 
 // Function to save projects to JSON file
 const saveProjects = (projects) => {
-    fs.writeFileSync('./data/projects.json', JSON.stringify(projects, null, 2), 'utf-8');
+    fs.writeFileSync(projectsFilePath, JSON.stringify(projects, null, 2), 'utf-8');
 };
 
 // Route for main dashboard
