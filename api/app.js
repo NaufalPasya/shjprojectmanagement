@@ -16,17 +16,26 @@ const projectsFilePath = path.join(__dirname, 'data', 'projects.json');
 // Function to load projects from JSON file
 const loadProjects = () => {
     try {
+        // Attempt to read the file
         const data = fs.readFileSync(projectsFilePath, 'utf-8');
         return JSON.parse(data);
     } catch (err) {
-        return []; // If file doesn't exist or is corrupted, return an empty array
+        // If the file doesn't exist or is corrupted, create the file with an empty array
+        if (err.code === 'ENOENT') {
+            fs.writeFileSync(projectsFilePath, JSON.stringify([])); // Create the file with an empty array
+            return []; // Return an empty array
+        }
+        console.error('Error reading file:', err);
+        return []; // In case of any other error, return an empty array
     }
 };
 
-// Function to save projects to JSON file
-const saveProjects = (projects) => {
-    fs.writeFileSync(projectsFilePath, JSON.stringify(projects, null, 2), 'utf-8');
-};
+function saveProjects(data) {
+    if (!fs.existsSync(projectsFilePath)) {
+        fs.writeFileSync(projectsFilePath, JSON.stringify([])); // Create the file if it doesn't exist
+    }
+    fs.writeFileSync(projectsFilePath, JSON.stringify(data, null, 2)); // Save data
+}
 
 // Route for main dashboard
 app.get('/', (req, res) => {
