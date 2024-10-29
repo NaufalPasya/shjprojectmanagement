@@ -1,0 +1,14 @@
+[
+    {
+        "day": "Monday",
+        "date": "28/10/2024",
+        "time": "10:00 AM",
+        "status": "Upcoming"
+    },
+    {
+        "day": "Tuesday",
+        "date": "29/10/2024",
+        "time": "2:00 PM",
+        "status": "Canceled"
+    }
+]

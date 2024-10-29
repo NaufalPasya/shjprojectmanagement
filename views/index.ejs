@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SHJ Project Management Dashboard</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        th, td {
+            text-align: center;
+            /* Ensure padding and spacing don't make it look too compressed */
+            padding: 12px;
+        }
+        /* For action buttons */
+        .btn-view {
+            color: #007bff;
+        }
+        .btn-edit {
+            color: #ffc107;
+        }
+        .btn-delete {
+            color: #dc3545;
+        }
+        /* Align status badges */
+        .status-badge {
+            font-size: 0.85em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <h1 class="my-4">SHJ Project Management Dashboard</h1>
+
+        <!-- Add New Project Button -->
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#projectModal" onclick="clearForm()">
+            Add New Project
+        </button>
+
+        <!-- Projects Table -->
+        <div class="table-responsive mt-4">
+            <table class="table table-bordered table-hover w-100">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Status</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% projects.forEach(project => { %>
+                    <tr>
+                        <td><%= project.id %></td>
+                        <td><%= project.name %></td>
+                        <td><%= project.description %></td>
+                        <td>
+                            <span class="badge <%= project.status === 'Active' ? 'badge-success' : 
+                                                    project.status === 'Planning' ? 'badge-secondary' : 
+                                                    project.status === 'On Hold' ? 'badge-warning' : 
+                                                    'badge-info' %>">
+                                <%= project.status %>
+                            </span>
+                        </td>
+                        <td><%= project.startDate %></td>
+                        <td><%= project.endDate %></td>
+                        <td>
+                            <!-- View button -->
+                            <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#viewModal<%= project.id %>">View</button>
+                            <!-- Edit button -->
+                            <button type="button" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#projectModal" onclick="editProject(<%= JSON.stringify(project) %>)">Edit</button>
+                            <!-- Delete button -->
+                            <a href="/delete-project/<%= project.name %>" class="btn btn-danger btn-sm">Delete</a>
+                        </td>
+                    </tr>
+
+
+
+                    
+                    <!-- View Modal -->
+                    <div class="modal fade" id="viewModal<%= project.id %>" tabindex="-1" role="dialog" aria-labelledby="viewModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="viewModalLabel">Project Details - <%= project.name %></h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <h5>Project Info</h5>
+                                    <ul class="list-group mb-4">
+                                        <li class="list-group-item"><strong>ID:</strong> <%= project.id %></li>
+                                        <li class="list-group-item"><strong>Status:</strong> <%= project.status %></li>
+                                        <li class="list-group-item"><strong>Description:</strong> <%= project.description %></li>
+                                        <li class="list-group-item"><strong>Start Date:</strong> <%= project.startDate %></li>
+                                        <li class="list-group-item"><strong>End Date:</strong> <%= project.endDate %></li>
+                                    </ul>
+
+                                    <h5>Tasks</h5>
+                                    <% if (project.tasks && project.tasks.length > 0) { %>
+                                        <ul class="list-group">
+                                            <% project.tasks.forEach(task => { %>
+                                            <li class="list-group-item">
+                                                <strong><%= task.name %></strong>
+                                                - 
+                                                <span class="badge <%= task.status === 'Done' ? 'badge-success' : 
+                                                                    task.status === 'In Progress' ? 'badge-info' : 
+                                                                    task.status === 'Pending' ? 'badge-warning' : 
+                                                                    task.status === 'Approval' ? 'badge-primary' : 
+                                                                    'badge-secondary' %>">
+                                                    <%= task.status %>
+                                                </span>
+                                            </li>
+                                            <% }) %>
+                                        </ul>
+                                    <% } else { %>
+                                        <p>No tasks assigned.</p>
+                                    <% } %>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+
+ 
+
+        <!-- Add/Edit Project Modal -->
+        <div class="modal fade" id="projectModal" tabindex="-1" role="dialog" aria-labelledby="projectModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="projectModalLabel">Add/Edit Project</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="projectForm" action="/add-project" method="POST">
+                            <input type="hidden" name="id" id="projectId">
+
+                            <div class="form-group">
+                                <label for="name">Project Name</label>
+                                <input type="text" class="form-control" id="name" name="name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="description">Description</label>
+                                <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="status">Status</label>
+                                <select class="form-control" id="status" name="status">
+                                    <option value="Active">Active</option>
+                                    <option value="Planning">Planning</option>
+                                    <option value="On Hold">On Hold</option>
+                                    <option value="Completed">Completed</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="startDate">Start Date</label>
+                                <input type="date" class="form-control" id="startDate" name="startDate" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="endDate">End Date</label>
+                                <input type="date" class="form-control" id="endDate" name="endDate" required>
+                            </div>
+
+                            <!-- Tasks Section -->
+                            <h5>Tasks</h5>
+                                <div id="tasks">
+                                    <div class="task-item mb-3">
+                                        <div class="form-group">
+                                            <label for="taskName">Task Name</label>
+                                            <input type="text" class="form-control" name="taskName[]" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="taskStatus">Task Status</label>
+                                            <select class="form-control" name="taskStatus[]">
+                                                <option value="To Do">To Do</option>
+                                                <option value="In Progress">In Progress</option>
+                                                <option value="Pending">Pending</option>
+                                                <option value="Approval">Approval</option>
+                                                <option value="Done">Done</option>
+                                            </select>
+                                        </div>
+                                        <button type="button" class="btn btn-danger remove-task">Remove Task</button>
+                                    </div>
+                                </div>
+
+                               <!-- Button Container for Add Task and Submit -->
+                                <div id="button-container">
+                                    <button type="button" class="btn btn-secondary" id="addTaskBtn">Add Task</button>
+                                    <button type="submit" class="btn btn-primary">Submit</button>
+                                </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Include Bootstrap JS, Popper.js, and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        // Reset the form when adding a new project
+        function clearForm() {
+            $('#projectForm')[0].reset();
+            $('#projectId').val('');
+            $('#tasks').empty();  // Clear tasks section
+        }
+    
+        // Edit project function
+        function editProject(project) {
+            // Set project fields
+            $('#projectId').val(project.id);
+            $('#name').val(project.name);
+            $('#description').val(project.description);
+            $('#status').val(project.status);
+            $('#startDate').val(project.startDate);
+            $('#endDate').val(project.endDate);
+    
+            // Clear existing tasks
+            $('#tasks').empty();
+    
+            // Check if project has tasks
+            if (project.tasks && project.tasks.length > 0) {
+                project.tasks.forEach(task => {
+                    // Create a new task input group dynamically
+                    const taskItem = `
+                        <div class="task-item mb-3">
+                            <div class="form-group">
+                                <label for="taskName">Task Name</label>
+                                <input type="text" class="form-control" name="taskName[]" value="${task.name}" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="taskStatus">Task Status</label>
+                                <select class="form-control" name="taskStatus[]">
+                                    <option value="To Do" ${task.status === 'To Do' ? 'selected' : ''}>To Do</option>
+                                    <option value="In Progress" ${task.status === 'In Progress' ? 'selected' : ''}>In Progress</option>
+                                    <option value="Pending" ${task.status === 'Pending' ? 'selected' : ''}>Pending</option>
+                                    <option value="Approval" ${task.status === 'Approval' ? 'selected' : ''}>Approval</option>
+                                    <option value="Done" ${task.status === 'Done' ? 'selected' : ''}>Done</option>
+                                </select>
+                            </div>
+                            <button type="button" class="btn btn-danger remove-task">Remove Task</button>
+                        </div>
+                    `;
+                    $('#tasks').append(taskItem);
+                });
+            } else {
+                // If no tasks, show an empty task input
+                addNewTask();
+            }
+        }
+    
+        // Function to add a new empty task input (useful for both new project and editing empty task list)
+        function addNewTask() {
+            const taskItem = `
+                <div class="task-item mb-3">
+                    <div class="form-group">
+                        <label for="taskName">Task Name</label>
+                        <input type="text" class="form-control" name="taskName[]" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="taskStatus">Task Status</label>
+                        <select class="form-control" name="taskStatus[]">
+                            <option value="To Do">To Do</option>
+                            <option value="In Progress">In Progress</option>
+                            <option value="Pending">Pending</option>
+                            <option value="Approval">Approval</option>
+                            <option value="Done">Done</option>
+                        </select>
+                    </div>
+                    <button type="button" class="btn btn-danger remove-task">Remove Task</button>
+                </div>
+            `;
+            $('#tasks').append(taskItem);
+        }
+    
+        // Add Task button handler
+        document.getElementById('addTaskBtn').addEventListener('click', function () {
+            addNewTask();
+        });
+    
+        // Remove Task button handler
+        $(document).on('click', '.remove-task', function() {
+            $(this).closest('.task-item').remove();
+        });
+    </script>
+    
+</body>
+</html>
