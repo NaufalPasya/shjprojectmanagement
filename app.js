@@ -7,43 +7,23 @@ const app = express();
 const PORT = 3000;
 
 app.use(bodyParser.urlencoded({ extended: true }));
-app.set('views', path.join(__dirname, '../views'));
 app.set('view engine', 'ejs');
-app.use(express.static('public'));
-const projectsFilePath = path.join(__dirname, 'data', 'projects.json');
+app.use(express.static(path.join(__dirname, 'public')));
 
-
+// Function to load projects from JSON file
 const loadProjects = () => {
     try {
-        // Ensure the parent directory exists
-        console.log('Project file path:', projectsFilePath);
-        const dir = path.dirname(projectsFilePath);
-        console.log('Directory path:', dir);
-        if (!fs.existsSync(dir)) {
-            fs.mkdirSync(dir, { recursive: true }); // Create directory and any missing parent directories
-        }
-
-        // Attempt to read the file
-        const data = fs.readFileSync(projectsFilePath, 'utf-8');
+        const data = fs.readFileSync('./data/projects.json', 'utf-8');
         return JSON.parse(data);
     } catch (err) {
-        // If the file doesn't exist or is corrupted, create the file with an empty array
-        if (err.code === 'ENOENT') {
-            fs.writeFileSync(projectsFilePath, JSON.stringify([])); // Create the file with an empty array
-            return []; // Return an empty array
-        }
-        console.error('Error reading file:', err);
-        return []; // In case of any other error, return an empty array
+        return []; // If file doesn't exist or is corrupted, return an empty array
     }
 };
 
-
-function saveProjects(data) {
-    if (!fs.existsSync(projectsFilePath)) {
-        fs.writeFileSync(projectsFilePath, JSON.stringify([])); // Create the file if it doesn't exist
-    }
-    fs.writeFileSync(projectsFilePath, JSON.stringify(data, null, 2)); // Save data
-}
+// Function to save projects to JSON file
+const saveProjects = (projects) => {
+    fs.writeFileSync('./data/projects.json', JSON.stringify(projects, null, 2), 'utf-8');
+};
 
 // Route for main dashboard
 app.get('/', (req, res) => {
@@ -51,12 +31,10 @@ app.get('/', (req, res) => {
     res.render('index', { projects});
 });
 
-// Route to handle adding or editing projects
 app.post('/add-project', (req, res) => {
     let projects = loadProjects();
-    const { id, name, description, status, startDate, endDate, taskName, taskStatus } = req.body;
+    const { id, name, description, status, startDate, endDate, taskName, taskStatus, poNumber, vendorName, statusPayment, dueDate } = req.body;
 
-    // Build tasks array from taskName[] and taskStatus[]
     let tasks = [];
     if (taskName && taskStatus) {
         for (let i = 0; i < taskName.length; i++) {
@@ -68,7 +46,7 @@ app.post('/add-project', (req, res) => {
     }
 
     if (id) {
-        // Edit project logic
+        // Edit existing project
         const projectIndex = projects.findIndex(p => p.id === parseInt(id));
         if (projectIndex !== -1) {
             projects[projectIndex] = {
@@ -78,56 +56,76 @@ app.post('/add-project', (req, res) => {
                 status,
                 startDate,
                 endDate,
-                tasks // Save the tasks in the project object
+                poNumber: poNumber || "",
+                vendorName: vendorName || "",         // Save Vendor Name
+                statusPayment: statusPayment || "Not Paid", // Save Status Payment
+                dueDate: dueDate || "",               // Save Due Date
+                tasks
             };
         }
     } else {
-        // Add new project logic
+        // Add new project
+        let newId = 1;
+        while (projects.some(project => project.id === newId)) {
+            newId++;
+        }
+
         const newProject = {
-            id: projects.length + 1, // Simple ID logic (you can replace this with something more robust)
+            id: newId,
             name,
             description,
             status,
             startDate,
             endDate,
-            tasks // Add tasks to the new project
+            poNumber: poNumber || "",
+            vendorName: vendorName || "",         // Save Vendor Name
+            statusPayment: statusPayment || "Not Paid", // Save Status Payment
+            dueDate: dueDate || "",               // Save Due Date
+            tasks
         };
+
         projects.push(newProject);
     }
 
+    projects = projects.map((project, index) => ({
+        ...project,
+        id: index + 1
+    }));
+
     saveProjects(projects);
     res.redirect('/');
 });
 
-// Route to handle project deletion
-app.get('/delete-project/:name', (req, res) => {
-    let projects = loadProjects();
-    projects = projects.filter(proj => proj.name !== req.params.name);
-    saveProjects(projects);
-    res.redirect('/');
-});
 
-// Route to view project details
-app.get('/view-project/:name', (req, res) => {
+
+
+app.get('/view-project/:id', (req, res) => {
     const projects = loadProjects();
-    const project = projects.find(p => p.name === req.params.name);
+    const project = projects.find(p => p.id === parseInt(req.params.id));
     if (project) {
-        res.send(`
-            <h1>${project.name}</h1>
-            <p>Description: ${project.description}</p>
-            <p>Start Date: ${project.startDate}</p>
-            <p>End Date: ${project.endDate}</p>
-            <p>Status: ${project.status}</p>
-            <h2>Tasks</h2>
-            <ul>
-                ${project.tasks.map(task => `<li>${task.name}: ${task.status}</li>`).join('')}
-            </ul>
-            <a href="/">Back to Dashboard</a>
-        `);
+        res.json(project); // Return JSON data
     } else {
-        res.send("Project not found.");
+        res.status(404).send('Project not found');
     }
 });
+
+
+app.get('/delete-project/:id', (req, res) => {
+    let projects = loadProjects();
+    
+    // Filter out the project to be deleted by ID
+    projects = projects.filter(proj => proj.id !== parseInt(req.params.id));
+    
+    // Reassign IDs to keep them sequential
+    projects.forEach((project, index) => {
+        project.id = index + 1;
+    });
+    
+    saveProjects(projects);
+    res.redirect('/');
+});
+
+
 
 // Route to show edit form for a project
 app.get('/edit-project/:name', (req, res) => {
@@ -149,10 +147,15 @@ app.get('/edit-project/:name', (req, res) => {
                 <label for="status">Status:</label>
                 <select name="status" required>
                     <option value="Active" ${project.status === 'Active' ? 'selected' : ''}>Active</option>
+                    <option value="Planning" ${project.status === 'Sailing' ? 'selected' : ''}>Sailing</option>
                     <option value="Planning" ${project.status === 'Planning' ? 'selected' : ''}>Planning</option>
+                    <option value="Planning" ${project.status === 'Sailing' ? 'selected' : ''}>Sailing</option>
                     <option value="On Hold" ${project.status === 'On Hold' ? 'selected' : ''}>On Hold</option>
                     <option value="Completed" ${project.status === 'Completed' ? 'selected' : ''}>Completed</option>
                 </select><br><br>
+
+                <label for="poNumber">PO Number:</label>
+                <input type="text" name="poNumber" value="${project.poNumber || ''}"><br><br>
 
                 <h2>Tasks</h2>
                 ${project.tasks.map((task, index) => `
@@ -175,12 +178,11 @@ app.get('/edit-project/:name', (req, res) => {
     }
 });
 
-// Route to handle project edit submission
+
 app.post('/edit-project/:name', (req, res) => {
     let projects = loadProjects();
     const index = projects.findIndex(p => p.name === req.params.name);
     if (index !== -1) {
-        // Collect taskName[] and taskStatus[] into a tasks array
         let tasks = [];
         if (req.body.taskName && req.body.taskStatus) {
             for (let i = 0; i < req.body.taskName.length; i++) {
@@ -192,17 +194,21 @@ app.post('/edit-project/:name', (req, res) => {
         }
 
         projects[index] = {
-            name: req.params.name,
+            ...projects[index],
             description: req.body.description,
             startDate: req.body.startDate,
             endDate: req.body.endDate,
             status: req.body.status,
-            tasks // Update tasks
+            poNumber: req.body.poNumber || "", // Ensure PO number is saved here
+            tasks
         };
+        
         saveProjects(projects);
     }
     res.redirect('/');
 });
+
+
 
 // Start the server
 app.listen(PORT, () => {

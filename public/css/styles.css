@@ -1,7 +1,58 @@
 /* General body and table styling */
 body {
     font-family: Arial, sans-serif;
+    background-image: url('/images/background.jpg'); /* Adjust path as needed */
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
 }
+
+.table-container {
+    background-color: rgba(255, 255, 255, 0.9); /* White with 90% opacity */
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    max-width: 90vw; /* Adjusts table width for smaller screens */
+    margin: 0 auto; /* Centers the table */
+}
+
+/* Adjustments for small screens */
+@media (max-width: 768px) {
+    .table-container {
+        padding: 10px;
+    }
+
+    th, td {
+        font-size: 0.9em;
+    }
+
+    /* Example for modal adjustments */
+    .modal-dialog {
+        width: 90%; /* Adjust modal width */
+        margin: auto;
+    }
+}
+
+/* Adjustments for extra small screens */
+@media (max-width: 576px) {
+    h1 {
+        font-size: 1.5em;
+    }
+
+    .btn {
+        padding: 8px 12px;
+        font-size: 0.8em;
+    }
+
+    /* Stack form elements or adjust sizes */
+    .form-group {
+        margin-bottom: 10px;
+    }
+}
+
+
+
 
 .dashboard {
     width: 80%;
@@ -19,14 +70,29 @@ table {
     margin: 20px 0;
 }
 
+table, th, td {
+    border: 1px solid #ddd;
+    color: #333; /* Darker color for readability */
+}
+
 th, td {
     padding: 10px;
     text-align: left;
     border-bottom: 1px solid #ddd;
+    border: 1px solid #ddd;
+    color: #333; /* Darker color for readability */
+}
+
+.truncate-text {
+    max-width: 150px; /* Adjust width based on your table */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 th {
-    background-color: #f2f2f2;
+    background-color: #f2f2f2; /* Light gray for better readability */
+    color: #333; /* Dark text for contrast */
 }
 
 a {
@@ -95,6 +161,12 @@ th, td {
 button.remove-task {
     flex-shrink: 0;  /* Ensures the button does not shrink */
     margin-left: 10px;
+}
+.add-project-button {
+    position: relative;
+    top: -10px; /* Adjust the value as needed to move the button up */
+    left: -10px; /* Adjust the value as needed to move the button left */
+    margin-bottom: 10px; /* Add some spacing from the table */
 }
 
 #addTaskBtn {
