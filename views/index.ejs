@@ -8,6 +8,35 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="/css/styles.css">
     <style>
+
+        /* Remove extra space and align the table header with the top */
+.container-fluid {
+    padding-top: 0; /* Remove any padding at the top */
+    margin-top: 0; /* Remove any margin at the top */
+}
+
+.table-container {
+    padding-top: 0;
+    margin-top: 0; /* Make sure the table aligns flush with the container top */
+}
+
+/* Remove any potential spacing above the table header */
+.table {
+    margin-top: 0; /* Remove any default margin on the table */
+}
+
+thead th {
+    background-color: #fff; /* Solid background for readability */
+    position: relative; /* Ensure alignment without any gap */
+    top: 0; /* Ensures the header aligns at the top */
+    padding-top: 0; /* Remove extra padding in the header if any */
+}
+
+/* Reduce or remove margin and padding for the buttons above */
+.d-flex.justify-content-end.align-items-center.my-3 {
+    margin-bottom: 0; /* Remove space below the buttons container */
+}
+
         th,
         td {
             text-align: center;
