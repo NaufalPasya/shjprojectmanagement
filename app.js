@@ -33,7 +33,7 @@ app.get('/', (req, res) => {
 
 app.post('/add-project', (req, res) => {
     let projects = loadProjects();
-    const { id, name, description, status, startDate, endDate, taskName, taskStatus, poNumber, vendorName, statusPayment, dueDate } = req.body;
+    const { id, customer, description, status, startDate, endDate, taskName, taskStatus, poNumber, vendorName, statusPayment, dueDate, quantity } = req.body;
 
     let tasks = [];
     if (taskName && taskStatus) {
@@ -51,50 +51,46 @@ app.post('/add-project', (req, res) => {
         if (projectIndex !== -1) {
             projects[projectIndex] = {
                 ...projects[projectIndex],
-                name,
+                customer,
                 description,
                 status,
                 startDate,
                 endDate,
                 poNumber: poNumber || "",
-                vendorName: vendorName || "",         // Save Vendor Name
-                statusPayment: statusPayment || "Not Paid", // Save Status Payment
-                dueDate: dueDate || "",               // Save Due Date
+                vendorName: vendorName || "",
+                statusPayment: statusPayment || "Not Paid",
+                dueDate: dueDate || "",
+                quantity: quantity || "", // Save Quantity
                 tasks
             };
         }
     } else {
         // Add new project
-        let newId = 1;
-        while (projects.some(project => project.id === newId)) {
-            newId++;
-        }
+        let newId = projects.length ? projects[projects.length - 1].id + 1 : 1;
 
         const newProject = {
             id: newId,
-            name,
+            customer,
             description,
             status,
             startDate,
             endDate,
             poNumber: poNumber || "",
-            vendorName: vendorName || "",         // Save Vendor Name
-            statusPayment: statusPayment || "Not Paid", // Save Status Payment
-            dueDate: dueDate || "",               // Save Due Date
+            vendorName: vendorName || "",
+            statusPayment: statusPayment || "Not Paid",
+            dueDate: dueDate || "",
+            quantity: quantity || "", // Save Quantity
             tasks
         };
 
         projects.push(newProject);
     }
 
-    projects = projects.map((project, index) => ({
-        ...project,
-        id: index + 1
-    }));
-
     saveProjects(projects);
     res.redirect('/');
 });
+
+
 
 
 
@@ -128,13 +124,13 @@ app.get('/delete-project/:id', (req, res) => {
 
 
 // Route to show edit form for a project
-app.get('/edit-project/:name', (req, res) => {
+app.get('/edit-project/:customer', (req, res) => {
     const projects = loadProjects();
-    const project = projects.find(p => p.name === req.params.name);
+    const project = projects.find(p => p.customer === req.params.customer);
     if (project) {
         res.send(`
-            <h1>Edit Project: ${project.name}</h1>
-            <form action="/edit-project/${project.name}" method="POST">
+            <h1>Edit Project: ${project.customer}</h1>
+            <form action="/edit-project/${project.customer}" method="POST">
                 <label for="description">Description:</label>
                 <input type="text" name="description" value="${project.description}" required><br><br>
 
@@ -178,10 +174,16 @@ app.get('/edit-project/:name', (req, res) => {
     }
 });
 
+app.get('/get-projects', (req, res) => {
+    const projects = loadProjects(); // Load from the JSON file
+    res.json(projects); // Send as JSON
+});
 
-app.post('/edit-project/:name', (req, res) => {
+
+
+app.post('/edit-project/:customer', (req, res) => {
     let projects = loadProjects();
-    const index = projects.findIndex(p => p.name === req.params.name);
+    const index = projects.findIndex(p => p.customer=== req.params.customer);
     if (index !== -1) {
         let tasks = [];
         if (req.body.taskName && req.body.taskStatus) {

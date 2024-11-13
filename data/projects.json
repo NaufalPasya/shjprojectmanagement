@@ -1,20 +1,21 @@
 [
   {
     "id": 1,
-    "name": "DNX Carton",
+    "customer": "DNX Carton",
     "description": "Delivery carton fr JKT To Balikpapan with cont' 20FT",
     "status": "Planning",
     "startDate": "2024-11-01",
     "endDate": "2024-11-08",
     "tasks": [],
-    "poNumber": "",
+    "poNumber": "12",
     "vendorName": "",
     "statusPayment": "Not Paid",
-    "dueDate": ""
+    "dueDate": "",
+    "quantity": "20000"
   },
   {
     "id": 2,
-    "name": "JX Nippon Delivery",
+    "customer": "JX Nippon Delivery",
     "description": "Delivery Oil JX to HPM",
     "status": "Completed",
     "startDate": "2024-10-28",
@@ -28,16 +29,20 @@
   },
   {
     "id": 3,
-    "name": "DNX Custom",
+    "customer": "DNX Custom",
     "description": "Custom Clearance connector block frm Amerika to Balikpapan ",
     "status": "Sailing",
     "startDate": "2024-10-22",
     "endDate": "2024-11-24",
-    "tasks": []
+    "tasks": [],
+    "poNumber": "13",
+    "vendorName": "",
+    "statusPayment": "Not Paid",
+    "dueDate": ""
   },
   {
     "id": 4,
-    "name": "Rental 2xCDD",
+    "customer": "Rental 2xCDD",
     "description": "Rental 2 Unit CDD (CV. Ultrans)",
     "status": "Active",
     "startDate": "2024-05-01",
@@ -46,7 +51,7 @@
   },
   {
     "id": 5,
-    "name": "JX NIPPON OIL",
+    "customer": "JX NIPPON OIL",
     "description": "2 UNIT TANGKI ",
     "status": "Active",
     "startDate": "2024-10-01",
@@ -55,7 +60,7 @@
   },
   {
     "id": 6,
-    "name": "PMA Man Power",
+    "customer": "PMA Man Power",
     "description": "Depo: Rumpin, Jatibarang, Indramayu, Pekanbaru, Manado, Manado Barat, Balikpapan, Samarinda, Surabaya, Semarang",
     "status": "Planning",
     "startDate": "2024-10-01",
@@ -69,7 +74,7 @@
   },
   {
     "id": 7,
-    "name": "PMA 3PL",
+    "customer": "PMA 3PL",
     "description": "3PL RDC Medan",
     "status": "Planning",
     "startDate": "2024-10-01",
@@ -78,16 +83,21 @@
   },
   {
     "id": 8,
-    "name": "DNX Custom and Delivery",
+    "customer": "DNX Custom and Delivery",
     "description": "Custom Clearance Forklift Man Cage",
     "status": "Planning",
     "startDate": "2024-10-28",
     "endDate": "2024-11-18",
-    "tasks": []
+    "tasks": [],
+    "poNumber": "",
+    "vendorName": "",
+    "statusPayment": "Not Paid",
+    "dueDate": "",
+    "quantity": "30000"
   },
   {
     "id": 9,
-    "name": "DNX Raw Material",
+    "customer": "DNX Raw Material",
     "description": "Delivery Example B3 From JKT-Australia",
     "status": "Planning",
     "startDate": "2024-11-04",
@@ -97,11 +107,15 @@
         "name": "Sounding Price",
         "status": "In Progress"
       }
-    ]
+    ],
+    "poNumber": "14",
+    "vendorName": "",
+    "statusPayment": "Not Paid",
+    "dueDate": ""
   },
   {
     "id": 10,
-    "name": "ahdjkasd",
+    "customer": "ahdjkasd",
     "description": "sadklfjaskld",
     "status": "Active",
     "startDate": "2024-11-30",
@@ -111,5 +125,131 @@
     "statusPayment": "Not Paid",
     "dueDate": "2024-11-30",
     "tasks": []
+  },
+  {
+    "id": 11,
+    "customer": "DNX Raw Material",
+    "description": "Delivery Example B3 From JKT-Australia",
+    "status": "Planning",
+    "startDate": "2024-11-04",
+    "endDate": "2024-11-29",
+    "tasks": [
+      {
+        "name": "Sounding Price",
+        "status": "In Progress"
+      }
+    ],
+    "poNumber": "14",
+    "vendorName": "",
+    "statusPayment": "Not Paid",
+    "dueDate": ""
+  },
+  {
+    "id": 12,
+    "customer": "DNX Raw Material",
+    "description": "Delivery Example B3 From JKT-Australia",
+    "status": "Planning",
+    "startDate": "2024-11-04",
+    "endDate": "2024-11-29",
+    "tasks": [
+      {
+        "name": "Sounding Price",
+        "status": "In Progress"
+      }
+    ],
+    "poNumber": "14",
+    "vendorName": "",
+    "statusPayment": "Not Paid",
+    "dueDate": ""
+  },
+  {
+    "id": 13,
+    "customer": "DNX Raw Material",
+    "description": "Delivery Example B3 From JKT-Australia",
+    "status": "Planning",
+    "startDate": "2024-11-04",
+    "endDate": "2024-11-29",
+    "tasks": [
+      {
+        "name": "Sounding Price",
+        "status": "In Progress"
+      }
+    ],
+    "poNumber": "14",
+    "vendorName": "",
+    "statusPayment": "Not Paid",
+    "dueDate": ""
+  },
+  {
+    "id": 14,
+    "customer": "DNX Raw Material",
+    "description": "Delivery Example B3 From JKT-Australia",
+    "status": "Planning",
+    "startDate": "2024-11-04",
+    "endDate": "2024-11-29",
+    "tasks": [
+      {
+        "name": "Sounding Price",
+        "status": "In Progress"
+      }
+    ],
+    "poNumber": "14",
+    "vendorName": "",
+    "statusPayment": "Not Paid",
+    "dueDate": ""
+  },
+  {
+    "id": 15,
+    "customer": "DNX Raw Material",
+    "description": "Delivery Example B3 From JKT-Australia",
+    "status": "Planning",
+    "startDate": "2024-11-04",
+    "endDate": "2024-11-29",
+    "tasks": [
+      {
+        "name": "Sounding Price",
+        "status": "In Progress"
+      }
+    ],
+    "poNumber": "14",
+    "vendorName": "",
+    "statusPayment": "Not Paid",
+    "dueDate": ""
+  },
+  {
+    "id": 16,
+    "customer": "DNX Raw Material",
+    "description": "Delivery Example B3 From JKT-Australia",
+    "status": "Planning",
+    "startDate": "2024-11-04",
+    "endDate": "2024-11-29",
+    "tasks": [
+      {
+        "name": "Sounding Price",
+        "status": "In Progress"
+      }
+    ],
+    "poNumber": "14",
+    "vendorName": "",
+    "statusPayment": "Not Paid",
+    "dueDate": ""
+  },
+  {
+    "id": 17,
+    "customer": "DNX Raw Material",
+    "description": "Delivery Example B3 From JKT-Australia",
+    "status": "Planning",
+    "startDate": "2024-11-04",
+    "endDate": "2024-11-29",
+    "tasks": [
+      {
+        "name": "Sounding Price",
+        "status": "In Progress"
+      }
+    ],
+    "poNumber": "14",
+    "vendorName": "",
+    "statusPayment": "Not Paid",
+    "dueDate": ""
   }
 ]
