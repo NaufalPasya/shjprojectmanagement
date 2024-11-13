@@ -416,6 +416,15 @@ thead th {
                             <input class="form-check-input" type="checkbox" value="Quantity" id="colQuantity" checked>
                             <label class="form-check-label" for="colQuantity">Quantity</label>
                         </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="Start Date" id="colStartDate" checked>
+                            <label class="form-check-label" for="colStartDate">Start Date</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="End Date" id="colEndDate" checked>
+                            <label class="form-check-label" for="colEndDate">End Date</label>
+                        </div>
+                        
                         
                         
                     </form>
@@ -624,7 +633,7 @@ thead th {
         document.getElementById('statusFilter').addEventListener('change', applyFilters);
         document.getElementById('paymentStatusFilter').addEventListener('change', applyFilters);
 
-        function downloadSelectedColumns() {
+    function downloadSelectedColumns() {
     console.log("Starting download process...");
 
     // Fetch all projects data from the server
@@ -648,7 +657,9 @@ thead th {
             "Status Payment": "statusPayment",
             "Due Date": "dueDate",
             "PO Number": "poNumber",
-            "Quantity": "quantity"
+            "Quantity": "quantity",
+            "Start Date": "startDate",  // New entry
+            "End Date": "endDate"       // New entry
         };
 
         // Apply any filters to export only relevant rows
