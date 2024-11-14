@@ -20,11 +20,20 @@ const loadProjects = () => {
     }
 };
 
-// Function to save projects to JSON file
+// Function to save projects back to JSON file
 const saveProjects = (projects) => {
     fs.writeFileSync('./data/projects.json', JSON.stringify(projects, null, 2), 'utf-8');
 };
 
+// Helper function to generate a new formatted ID
+const generateNewId = (projects) => {
+    const lastProject = projects[projects.length - 1];
+    const lastIdNumber = lastProject ? parseInt(lastProject.id.split('-')[1]) : 0;
+    const newIdNumber = lastIdNumber + 1;
+    return `SHJ-${String(newIdNumber).padStart(4, '0')}`;
+};
+
+// Helper function to format date to DD-MM-YYYY
 function formatDateToDDMMYYYY(dateString) {
     if (!dateString) return null;
     const [year, month, day] = dateString.split('-');
@@ -43,10 +52,10 @@ app.get('/', (req, res) => {
     res.render('index', { projects });
 });
 
-
+// Route to add or edit a project
 app.post('/add-project', (req, res) => {
     let projects = loadProjects();
-    const { id, customer, description, status, startDate, endDate, taskName, taskStatus, poNumber, vendorName, statusPayment, dueDate, quantity, invoiceStatus, invoiceDate } = req.body;
+    const { customer, description, status, startDate, endDate, taskName, taskStatus, poNumber, vendorName, statusPayment, dueDate, quantity, invoiceStatus, invoiceDate } = req.body;
 
     let tasks = [];
     if (taskName && taskStatus) {
@@ -58,9 +67,9 @@ app.post('/add-project', (req, res) => {
         }
     }
 
-    if (id) {
+    if (req.body.id) {
         // Edit existing project
-        const projectIndex = projects.findIndex(p => p.id === parseInt(id));
+        const projectIndex = projects.findIndex(p => p.id === req.body.id);
         if (projectIndex !== -1) {
             projects[projectIndex] = {
                 ...projects[projectIndex],
@@ -73,16 +82,15 @@ app.post('/add-project', (req, res) => {
                 vendorName: vendorName || "",
                 statusPayment: statusPayment || "Not Paid",
                 dueDate: dueDate || "",
-                quantity: quantity || "", // Save Quantity
-                tasks,
-                invoiceStatus,
-                invoiceDate
+                quantity: quantity || "",
+                invoiceStatus: invoiceStatus || "Not Yet",
+                invoiceDate,
+                tasks
             };
         }
     } else {
         // Add new project
-        let newId = projects.length ? projects[projects.length - 1].id + 1 : 1;
-
+        const newId = generateNewId(projects);
         const newProject = {
             id: newId,
             customer,
@@ -95,11 +103,10 @@ app.post('/add-project', (req, res) => {
             statusPayment: statusPayment || "Not Paid",
             dueDate: dueDate || "",
             quantity: quantity || "",
-            invoiceStatus,
+            invoiceStatus: invoiceStatus || "Not Yet",
             invoiceDate,
             tasks
         };
-
         projects.push(newProject);
     }
 
@@ -107,40 +114,26 @@ app.post('/add-project', (req, res) => {
     res.redirect('/');
 });
 
-
-
-
-
-
 app.get('/view-project/:id', (req, res) => {
     const projects = loadProjects();
-    const project = projects.find(p => p.id === parseInt(req.params.id));
+    const project = projects.find(p => p.id === req.params.id);
     if (project) {
-        res.json(project); // Return JSON data
+        res.json(project);
     } else {
         res.status(404).send('Project not found');
     }
 });
 
-
 app.get('/delete-project/:id', (req, res) => {
     let projects = loadProjects();
 
     // Filter out the project to be deleted by ID
-    projects = projects.filter(proj => proj.id !== parseInt(req.params.id));
-
-    // Reassign IDs to keep them sequential
-    projects.forEach((project, index) => {
-        project.id = index + 1;
-    });
+    projects = projects.filter(proj => proj.id !== req.params.id);
 
     saveProjects(projects);
     res.redirect('/');
 });
 
-
-
-// Route to show edit form for a project
 app.get('/edit-project/:customer', (req, res) => {
     const projects = loadProjects();
     const project = projects.find(p => p.customer === req.params.customer);
@@ -175,8 +168,8 @@ app.get('/edit-project/:customer', (req, res) => {
                     <option value="Document Sent to Finance" ${project.invoiceStatus === 'Document Sent to Finance' ? 'selected' : ''}>Document Sent to Finance</option>
                     <option value="Complete" ${project.invoiceStatus === 'Complete' ? 'selected' : ''}>Complete</option>
                 </select><br><br>
-                <label for="inoviceDate">Invoice Date:</label>
-                <input type="date" name="invoiceDate" value="${project.invoiceDate}" required><br><br>
+                <label for="invoiceDate">Invoice Date:</label>
+                <input type="date" name="invoiceDate" value="${project.invoiceDate || ''}"><br><br>
 
                 <h2>Tasks</h2>
                 ${project.tasks.map((task, index) => `
@@ -219,9 +212,9 @@ app.post('/edit-project/:customer', (req, res) => {
             startDate: req.body.startDate,
             endDate: req.body.endDate,
             status: req.body.status,
-            poNumber: req.body.poNumber || "", // Ensure PO number is saved here
+            poNumber: req.body.poNumber || "",
             invoiceStatus: req.body.invoiceStatus || "Not Yet",
-            invoiceDate: req.body.invoiceDate, // Handle Invoice Status
+            invoiceDate: req.body.invoiceDate,
             tasks
         };
 
@@ -229,9 +222,6 @@ app.post('/edit-project/:customer', (req, res) => {
     }
     res.redirect('/');
 });
-
-
-
 
 // Start the server
 app.listen(PORT, () => {

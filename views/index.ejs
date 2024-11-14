@@ -24,6 +24,9 @@
 .table {
     margin-top: 0; /* Remove any default margin on the table */
 }
+.table-active {
+    background-color: #f2f2f2; /* Light gray background for the selected row */
+}
 
 thead th {
     background-color: #fff; /* Solid background for readability */
@@ -98,9 +101,9 @@ thead th {
                     onclick="clearForm()">
                     Add New Project
                 </button>
-                <button type="button" class="btn btn-primary" id="manageProjectBtn">
+                <button type="button" class="btn btn-primary" id="manageProjectBtn" disabled>
                     Manage Project
-                </button>
+                </button>                
                 <button type="button" class="btn btn-success ml-2" data-toggle="modal"
                     data-target="#columnSelectionModal">
                     Download Excel
@@ -112,7 +115,6 @@ thead th {
             <table class="table table-bordered table-hover w-100">
                 <thead>
                     <tr>
-                        <th>Select</th>
                         <th>ID</th>
                         <th>Customer</th>
                         <th>Description</th>
@@ -126,8 +128,7 @@ thead th {
                 </thead>
                 <tbody>
                     <% projects.forEach(project=> { %>
-                        <tr>
-                            <td><input type="radio" name="selectedProject" value="<%= project.id %>"></td>
+                        <tr data-project-id="<%= project.id %>">
                             <!-- Radio button for selection -->
                             <td>
                                 <%= project.id %>
@@ -502,7 +503,8 @@ thead th {
             $('#status').val(project.status);
             $('#startDate').val(project.startDate);
             $('#endDate').val(project.endDate);
-            $('#invoiceStatus').val(project.invoiceStatus || "Not Yet"); // Default to "Not Yet"  
+            $('#invoiceStatus').val(project.invoiceStatus || "Not Yet"); // Default to "Not Yet" 
+            $('#invoiceDate').val(project.invoiceDate); 
             $('#poNumber').val(project.poNumber || "");
             $('#vendorName').val(project.vendorName || ""); // Populate Vendor Name
             $('#dueDate').val(project.dueDate || ""); // Populate Due Date
@@ -589,29 +591,38 @@ thead th {
             }
         });
 
-        // Manage Project button logic
-        document.getElementById('manageProjectBtn').addEventListener('click', function () {
-            console.log("Manage Project button clicked"); // Debugging
+        let selectedProjectId = null;
+let selectedRow = null;
 
-            const selectedProject = document.querySelector('input[name="selectedProject"]:checked');
+function selectProject(projectId, row) {
+    // Deselect the previous row if any
+    if (selectedRow) {
+        selectedRow.classList.remove("table-active");
+    }
 
-            if (!selectedProject) {
-                alert("Please select a project to manage.");
-                return;
-            }
+    // Select the new row
+    selectedProjectId = projectId;
+    selectedRow = row;
+    selectedRow.classList.add("table-active");
 
-            const projectId = selectedProject.value;
-            console.log("Selected project ID:", projectId); // Debugging
+    // Enable the Manage Project button
+    document.getElementById("manageProjectBtn").disabled = false;
+}
 
-            // Fetch project data for editing
-            $.get(`/view-project/${projectId}`, function (data) {
-                console.log("Project data received:", data); // Debugging
-                editProject(data); // Populate the edit modal with the selected project data
-                $('#projectModal').modal('show'); // Show the edit modal
-            }).fail(function () {
-                alert("Failed to retrieve project data.");
-            });
+// Modify the Manage Project button click to use the selected project ID
+document.getElementById("manageProjectBtn").addEventListener("click", function () {
+    if (selectedProjectId) {
+        // Fetch project data for editing
+        $.get(`/view-project/${selectedProjectId}`, function (data) {
+            editProject(data); // Populate the edit modal with the selected project data
+            $('#projectModal').modal('show'); // Show the edit modal
+        }).fail(function () {
+            alert("Failed to retrieve project data.");
         });
+    } else {
+        alert("Please select a project to manage.");
+    }
+});
 
         // Filter projects by name
         document.getElementById('filterInput').addEventListener('input', function () {
@@ -756,6 +767,13 @@ thead th {
         const [year, month, day] = dateString.split('-');
         return `${day}-${month}-${year}`;
     }
+
+    $(document).ready(function() {
+    $("tr").click(function() {
+        const projectId = $(this).data("project-id");
+        selectProject(projectId, this);
+    });
+});
 
 
 
