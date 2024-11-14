@@ -75,7 +75,7 @@ thead th {
             <div class="d-flex justify-content-end align-items-center my-3">
 
 
-                <input type="text" id="filterInput" class="form-control mr-3" placeholder="Filter by project name"
+                <input type="text" id="filterInput" class="form-control mr-3" placeholder="Filter by Customer"
                     style="max-width: 200px;"> <!-- Status Filter Dropdown -->
                 <select id="statusFilter" class="form-control mr-3" style="max-width: 150px;">
                     <option value="">Filter by Status</option>
@@ -87,11 +87,11 @@ thead th {
                 </select>
 
                 <!-- Payment Status Filter Dropdown -->
-                <select id="paymentStatusFilter" class="form-control mr-3" style="max-width: 150px;">
-                    <option value="">Filter by Payment Status</option>
-                    <option value="Not Paid">Not Paid</option>
-                    <option value="Paid">Paid</option>
-                    <option value="Overdue">Overdue</option>
+                <select id="invoiceStatusFilter" class="form-control mr-3" style="max-width: 150px;">
+                    <option value="">Filter by Invoice</option>
+                    <option value="Not Yet">Not Yet</option>
+                    <option value="Document Sent to Finance">Document Sent to Finance</option>
+                    <option value="Complete">Complete</option>
                 </select>
 
                 <button type="button" class="btn btn-primary mr-2" data-toggle="modal" data-target="#projectModal"
@@ -636,13 +636,13 @@ thead th {
         function applyFilters() {
             const filterValue = document.getElementById('filterInput').value.toLowerCase();
             const statusFilter = document.getElementById('statusFilter').value;
-            const paymentStatusFilter = document.getElementById('paymentStatusFilter').value;
+            const invoiceStatusFilter = document.getElementById('invoiceStatusFilter').value;
             const rows = document.querySelectorAll('tbody tr');
 
             rows.forEach(row => {
                 const nameCell = row.querySelector('td:nth-child(3)');
-                const statusCell = row.querySelector('td:nth-child(5)');
-                const paymentStatusCell = row.querySelector('td:nth-child(7)');
+                const statusCell = row.querySelector('td:nth-child(7)');
+                const invoiceStatusCell = row.querySelector('td:nth-child(9)');
 
                 let isVisible = true;
 
@@ -659,9 +659,9 @@ thead th {
                 }
 
                 // Filter by payment status
-                if (paymentStatusCell && paymentStatusFilter) {
-                    const paymentStatusText = paymentStatusCell.textContent.trim();
-                    isVisible = isVisible && paymentStatusText === paymentStatusFilter;
+                if (invoiceStatusCell && invoiceStatusFilter) {
+                    const invoiceStatusText = invoiceStatusCell.textContent.trim();
+                    isVisible = isVisible && invoiceStatusText === invoiceStatusFilter;
                 }
 
 
@@ -672,7 +672,7 @@ thead th {
         // Event listeners for search and filter fields
         document.getElementById('filterInput').addEventListener('input', applyFilters);
         document.getElementById('statusFilter').addEventListener('change', applyFilters);
-        document.getElementById('paymentStatusFilter').addEventListener('change', applyFilters);
+        document.getElementById('invoiceStatusFilter').addEventListener('change', applyFilters);
 
     function downloadSelectedColumns() {
     console.log("Starting download process...");
@@ -708,7 +708,7 @@ thead th {
         // Apply any filters to export only relevant rows
         const filterValue = document.getElementById('filterInput').value.toLowerCase();
         const statusFilter = document.getElementById('statusFilter').value;
-        const paymentStatusFilter = document.getElementById('paymentStatusFilter').value;
+        const invoiceStatusFilter = document.getElementById('invoiceStatusFilter').value;
 
         const filteredData = allProjects.filter(project => {
             let matches = true;
@@ -719,7 +719,7 @@ thead th {
             if (statusFilter && project.status !== statusFilter) {
                 matches = false;
             }
-            if (paymentStatusFilter && project.statusPayment !== paymentStatusFilter) {
+            if (invoiceStatusFilter && project.invoiceStatus !== invoiceStatusFilter) {
                 matches = false;
             }
             return matches;
