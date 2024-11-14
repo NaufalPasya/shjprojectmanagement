@@ -25,15 +25,27 @@ const saveProjects = (projects) => {
     fs.writeFileSync('./data/projects.json', JSON.stringify(projects, null, 2), 'utf-8');
 };
 
+function formatDateToDDMMYYYY(dateString) {
+    if (!dateString) return null;
+    const [year, month, day] = dateString.split('-');
+    return `${day}-${month}-${year}`;
+}
+
 // Route for main dashboard
 app.get('/', (req, res) => {
-    const projects = loadProjects();
-    res.render('index', { projects});
+    const projects = loadProjects().map(project => ({
+        ...project,
+        startDate: formatDateToDDMMYYYY(project.startDate),
+        endDate: formatDateToDDMMYYYY(project.endDate),
+        dueDate: formatDateToDDMMYYYY(project.dueDate)
+    }));
+    res.render('index', { projects });
 });
+
 
 app.post('/add-project', (req, res) => {
     let projects = loadProjects();
-    const { id, customer, description, status, startDate, endDate, taskName, taskStatus, poNumber, vendorName, statusPayment, dueDate, quantity } = req.body;
+    const { id, customer, description, status, startDate, endDate, taskName, taskStatus, poNumber, vendorName, statusPayment, dueDate, quantity, invoiceStatus } = req.body;
 
     let tasks = [];
     if (taskName && taskStatus) {
@@ -61,7 +73,8 @@ app.post('/add-project', (req, res) => {
                 statusPayment: statusPayment || "Not Paid",
                 dueDate: dueDate || "",
                 quantity: quantity || "", // Save Quantity
-                tasks
+                tasks,
+                invoiceStatus
             };
         }
     } else {
@@ -79,7 +92,8 @@ app.post('/add-project', (req, res) => {
             vendorName: vendorName || "",
             statusPayment: statusPayment || "Not Paid",
             dueDate: dueDate || "",
-            quantity: quantity || "", // Save Quantity
+            quantity: quantity || "",
+            invoiceStatus,
             tasks
         };
 
@@ -108,15 +122,15 @@ app.get('/view-project/:id', (req, res) => {
 
 app.get('/delete-project/:id', (req, res) => {
     let projects = loadProjects();
-    
+
     // Filter out the project to be deleted by ID
     projects = projects.filter(proj => proj.id !== parseInt(req.params.id));
-    
+
     // Reassign IDs to keep them sequential
     projects.forEach((project, index) => {
         project.id = index + 1;
     });
-    
+
     saveProjects(projects);
     res.redirect('/');
 });
@@ -143,15 +157,21 @@ app.get('/edit-project/:customer', (req, res) => {
                 <label for="status">Status:</label>
                 <select name="status" required>
                     <option value="Active" ${project.status === 'Active' ? 'selected' : ''}>Active</option>
-                    <option value="Planning" ${project.status === 'Sailing' ? 'selected' : ''}>Sailing</option>
+                    <option value="Sailing" ${project.status === 'Sailing' ? 'selected' : ''}>Sailing</option>
                     <option value="Planning" ${project.status === 'Planning' ? 'selected' : ''}>Planning</option>
-                    <option value="Planning" ${project.status === 'Sailing' ? 'selected' : ''}>Sailing</option>
                     <option value="On Hold" ${project.status === 'On Hold' ? 'selected' : ''}>On Hold</option>
                     <option value="Completed" ${project.status === 'Completed' ? 'selected' : ''}>Completed</option>
                 </select><br><br>
 
                 <label for="poNumber">PO Number:</label>
                 <input type="text" name="poNumber" value="${project.poNumber || ''}"><br><br>
+
+                <label for="invoiceStatus">Invoice Status:</label>
+                <select name="invoiceStatus" required>
+                    <option value="Not Yet" ${project.invoiceStatus === 'Not Yet' ? 'selected' : ''}>Not Yet</option>
+                    <option value="Document Sent to Finance" ${project.invoiceStatus === 'Document Sent to Finance' ? 'selected' : ''}>Document Sent to Finance</option>
+                    <option value="Complete" ${project.invoiceStatus === 'Complete' ? 'selected' : ''}>Complete</option>
+                </select><br><br>
 
                 <h2>Tasks</h2>
                 ${project.tasks.map((task, index) => `
@@ -174,16 +194,9 @@ app.get('/edit-project/:customer', (req, res) => {
     }
 });
 
-app.get('/get-projects', (req, res) => {
-    const projects = loadProjects(); // Load from the JSON file
-    res.json(projects); // Send as JSON
-});
-
-
-
 app.post('/edit-project/:customer', (req, res) => {
     let projects = loadProjects();
-    const index = projects.findIndex(p => p.customer=== req.params.customer);
+    const index = projects.findIndex(p => p.customer === req.params.customer);
     if (index !== -1) {
         let tasks = [];
         if (req.body.taskName && req.body.taskStatus) {
@@ -202,13 +215,15 @@ app.post('/edit-project/:customer', (req, res) => {
             endDate: req.body.endDate,
             status: req.body.status,
             poNumber: req.body.poNumber || "", // Ensure PO number is saved here
+            invoiceStatus: req.body.invoiceStatus || "Not Yet", // Handle Invoice Status
             tasks
         };
-        
+
         saveProjects(projects);
     }
     res.redirect('/');
 });
+
 
 
 

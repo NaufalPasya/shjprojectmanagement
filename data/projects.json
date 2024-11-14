@@ -11,7 +11,8 @@
     "vendorName": "",
     "statusPayment": "Not Paid",
     "dueDate": "",
-    "quantity": "20000"
+    "quantity": "20000",
+    "invoiceStatus": "Complete"
   },
   {
     "id": 2,
@@ -25,7 +26,13 @@
         "name": "Cleaning Tangki",
         "status": "Done"
       }
-    ]
+    ],
+    "poNumber": "",
+    "vendorName": "",
+    "statusPayment": "Not Paid",
+    "dueDate": "",
+    "quantity": "",
+    "invoiceStatus": "Document Sent to Finance"
   },
   {
     "id": 3,
