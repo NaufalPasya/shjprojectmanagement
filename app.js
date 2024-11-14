@@ -37,6 +37,7 @@ app.get('/', (req, res) => {
         ...project,
         startDate: formatDateToDDMMYYYY(project.startDate),
         endDate: formatDateToDDMMYYYY(project.endDate),
+        invoiceDate: formatDateToDDMMYYYY(project.invoiceDate),
         dueDate: formatDateToDDMMYYYY(project.dueDate)
     }));
     res.render('index', { projects });
@@ -45,7 +46,7 @@ app.get('/', (req, res) => {
 
 app.post('/add-project', (req, res) => {
     let projects = loadProjects();
-    const { id, customer, description, status, startDate, endDate, taskName, taskStatus, poNumber, vendorName, statusPayment, dueDate, quantity, invoiceStatus } = req.body;
+    const { id, customer, description, status, startDate, endDate, taskName, taskStatus, poNumber, vendorName, statusPayment, dueDate, quantity, invoiceStatus, invoiceDate } = req.body;
 
     let tasks = [];
     if (taskName && taskStatus) {
@@ -74,7 +75,8 @@ app.post('/add-project', (req, res) => {
                 dueDate: dueDate || "",
                 quantity: quantity || "", // Save Quantity
                 tasks,
-                invoiceStatus
+                invoiceStatus,
+                invoiceDate
             };
         }
     } else {
@@ -94,6 +96,7 @@ app.post('/add-project', (req, res) => {
             dueDate: dueDate || "",
             quantity: quantity || "",
             invoiceStatus,
+            invoiceDate,
             tasks
         };
 
@@ -172,6 +175,8 @@ app.get('/edit-project/:customer', (req, res) => {
                     <option value="Document Sent to Finance" ${project.invoiceStatus === 'Document Sent to Finance' ? 'selected' : ''}>Document Sent to Finance</option>
                     <option value="Complete" ${project.invoiceStatus === 'Complete' ? 'selected' : ''}>Complete</option>
                 </select><br><br>
+                <label for="inoviceDate">Invoice Date:</label>
+                <input type="date" name="invoiceDate" value="${project.invoiceDate}" required><br><br>
 
                 <h2>Tasks</h2>
                 ${project.tasks.map((task, index) => `
@@ -215,7 +220,8 @@ app.post('/edit-project/:customer', (req, res) => {
             endDate: req.body.endDate,
             status: req.body.status,
             poNumber: req.body.poNumber || "", // Ensure PO number is saved here
-            invoiceStatus: req.body.invoiceStatus || "Not Yet", // Handle Invoice Status
+            invoiceStatus: req.body.invoiceStatus || "Not Yet",
+            invoiceDate: req.body.invoiceDate, // Handle Invoice Status
             tasks
         };
 

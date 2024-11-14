@@ -8,42 +8,34 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="/css/styles.css">
     <style>
+
         /* Remove extra space and align the table header with the top */
-        .container-fluid {
-            padding-top: 0;
-            /* Remove any padding at the top */
-            margin-top: 0;
-            /* Remove any margin at the top */
-        }
+.container-fluid {
+    padding-top: 0; /* Remove any padding at the top */
+    margin-top: 0; /* Remove any margin at the top */
+}
 
-        .table-container {
-            padding-top: 0;
-            margin-top: 0;
-            /* Make sure the table aligns flush with the container top */
-        }
+.table-container {
+    padding-top: 0;
+    margin-top: 0; /* Make sure the table aligns flush with the container top */
+}
 
-        /* Remove any potential spacing above the table header */
-        .table {
-            margin-top: 0;
-            /* Remove any default margin on the table */
-        }
+/* Remove any potential spacing above the table header */
+.table {
+    margin-top: 0; /* Remove any default margin on the table */
+}
 
-        thead th {
-            background-color: #fff;
-            /* Solid background for readability */
-            position: relative;
-            /* Ensure alignment without any gap */
-            top: 0;
-            /* Ensures the header aligns at the top */
-            padding-top: 0;
-            /* Remove extra padding in the header if any */
-        }
+thead th {
+    background-color: #fff; /* Solid background for readability */
+    position: relative; /* Ensure alignment without any gap */
+    top: 0; /* Ensures the header aligns at the top */
+    padding-top: 0; /* Remove extra padding in the header if any */
+}
 
-        /* Reduce or remove margin and padding for the buttons above */
-        .d-flex.justify-content-end.align-items-center.my-3 {
-            margin-bottom: 0;
-            /* Remove space below the buttons container */
-        }
+/* Reduce or remove margin and padding for the buttons above */
+.d-flex.justify-content-end.align-items-center.my-3 {
+    margin-bottom: 0; /* Remove space below the buttons container */
+}
 
         th,
         td {
@@ -116,7 +108,7 @@
 
             </div>
 
-
+            
             <table class="table table-bordered table-hover w-100">
                 <thead>
                     <tr>
@@ -124,10 +116,11 @@
                         <th>ID</th>
                         <th>Customer</th>
                         <th>Description</th>
-                        <th>Status</th>
                         <th>Start Date</th>
                         <th>End Date</th>
-                        <th>Invoice Status</th>
+                        <th>Status</th>
+                        <th>Invoice Date</th>
+                        <th>Invoice Status</th>  
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -145,27 +138,32 @@
                             <td class="truncate-text">
                                 <%= project.description %>
                             </td>
-                            <td>
-                                <span class="badge <%= project.status === 'Active' ? 'badge-success' : 
-                                        project.status === 'Planning' ? 'badge-secondary' : 
-                                        project.status === 'On Hold' ? 'badge-warning' : 
-                                        project.status === 'Sailing' ? 'badge-primary' : 
-                                        'badge-info' %>">
-                                    <%= project.status %>
-                                </span>
-                            <td>
-                                <%= project.startDate %>
-                            </td>
-                            <td>
-                                <%= project.endDate %>
-                            </td>
-                            <td>
-                                <span class="badge <%= project.invoiceStatus === 'Complete' ? 'badge-success' : 
+                                <td>
+                                    <%= project.startDate %>
+                                </td>
+                                <td>
+                                    <%= project.endDate %>
+                                </td>
+                                <td>
+                                    <span class="badge <%= project.status === 'Active' ? 'badge-success' : 
+                                            project.status === 'Planning' ? 'badge-secondary' : 
+                                            project.status === 'On Hold' ? 'badge-warning' : 
+                                            project.status === 'Sailing' ? 'badge-primary' : 
+                                            'badge-info' %>">
+                                        <%= project.status %>
+                                    </span>
+                                    </td>
+                                    <td>
+                                        <%= project.invoiceDate %>
+                                    </td>
+                                <td>
+                                    <span class="badge <%= project.invoiceStatus === 'Complete' ? 'badge-success' : 
                                                             project.invoiceStatus === 'Document Sent to Finance' ? 'badge-warning' : 
-                                                            'badge-danger' %>">
-                                    <%= project.invoiceStatus || "N/A" %>
-                                </span>
-                            </td>
+                                                            'badge-danger' %>"> 
+                                        <%= project.invoiceStatus || "N/A" %>
+                                    </span>
+                                </td>
+                                
                             <td>
                                 <button type="button" class="btn btn-info btn-sm" data-toggle="modal"
                                     data-target="#viewModal<%= project.id %>">View</button>
@@ -181,8 +179,8 @@
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h5 class="modal-title" id="viewModalLabel">Project Details - <%=
-                                                project.customer %>
+                                        <h5 class="modal-title" id="viewModalLabel">Project Details - <%= project.customer
+                                                %>
                                         </h5>
                                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                             <span aria-hidden="true">&times;</span>
@@ -194,8 +192,15 @@
                                             <li class="list-group-item"><strong>ID:</strong>
                                                 <%= project.id %>
                                             </li>
-                                            <li class="list-group-item"><strong>Status:</strong>
-                                                <%= project.status %>
+                                            <li class="list-group-item">
+                                                <strong>Status:</strong> 
+                                                <span class="badge <%= project.status === 'Active' ? 'badge-success' : 
+                                                        project.status === 'Planning' ? 'badge-secondary' : 
+                                                        project.status === 'On Hold' ? 'badge-warning' : 
+                                                        project.status === 'Sailing' ? 'badge-primary' : 
+                                                        'badge-info' %>">
+                                                    <%= project.status %>
+                                                </span>
                                             </li>
                                             <li class="list-group-item"><strong>Description:</strong>
                                                 <%= project.description %>
@@ -206,9 +211,15 @@
                                             <li class="list-group-item"><strong>End Date:</strong>
                                                 <%= project.endDate %>
                                             </li>
-                                            <li class="list-group-item"><strong>Invoice Status:</strong>
-                                                <%= project.invoiceStatus %>
+                                            <li class="list-group-item">
+                                                <strong>Invoice Status:</strong>
+                                                <span class="badge <%= project.invoiceStatus === 'Document Sent to Finance' ? 'badge-info' : 
+                                                        project.invoiceStatus === 'Complete' ? 'badge-success' : 
+                                                        'badge-secondary' %>">
+                                                    <%= project.invoiceStatus %>
+                                                </span>
                                             </li>
+                                            <li class="list-group-item"><strong>Invoice Date:</strong> <%= project.invoiceDate || "N/A" %></li>
                                             <li class="list-group-item"><strong>PO Number:</strong>
                                                 <%= project.poNumber || "N/A" %>
                                             </li>
@@ -216,11 +227,17 @@
                                                 <%= project.vendorName || "N/A" %>
                                             </li>
                                             <li class="list-group-item"><strong>Quantity:</strong>
-                                                <%= project.quantity || "N/A" %>
-                                            </li>
-                                            <li class="list-group-item"><strong>Status Payment:</strong>
-                                                <%= project.statusPayment || "Pending" %>
-                                            </li>
+                                                 <%= project.quantity || "N/A" %>
+                                                </li>
+                                                <li class="list-group-item">
+                                                    <strong>Status Payment:</strong> 
+                                                    <span class="badge <%= project.statusPayment === 'Paid' ? 'badge-success' : 
+                                                            project.statusPayment === 'Not Paid' ? 'badge-warning' : 
+                                                            project.statusPayment === 'Overdue' ? 'badge-danger' : 
+                                                            'badge-secondary' %>">
+                                                        <%= project.statusPayment %>
+                                                    </span>
+                                                </li>
                                             <li class="list-group-item"><strong>Due Date:</strong>
                                                 <%= project.dueDate || "N/A" %>
                                             </li>
@@ -283,7 +300,7 @@
                             <label for="customer">Customer</label>
                             <input type="text" class="form-control" id="customer" name="customer" required>
                         </div>
-
+                        
                         <div class="form-group">
                             <label for="description">Description</label>
                             <textarea class="form-control" id="description" name="description" rows="3"
@@ -316,6 +333,10 @@
                             </select>
                         </div>
                         <div class="form-group">
+                            <label for="invoiceDate">Invoice Date</label>
+                            <input type="date" class="form-control" id="invoiceDate" name="invoiceDate">
+                        </div>                        
+                        <div class="form-group">
                             <label for="poNumber">PO Number</label>
                             <input type="text" class="form-control" id="poNumber" name="poNumber">
                         </div>
@@ -328,7 +349,7 @@
                             <label for="quantity">Quantity</label>
                             <input type="number" class="form-control" id="quantity" name="quantity" min="1">
                         </div>
-
+                        
 
                         <div class="form-group">
                             <label for="statusPayment">Status Payment</label>
@@ -434,8 +455,7 @@
                             <label class="form-check-label" for="colQuantity">Quantity</label>
                         </div>
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="Start Date" id="colStartDate"
-                                checked>
+                            <input class="form-check-input" type="checkbox" value="Start Date" id="colStartDate" checked>
                             <label class="form-check-label" for="colStartDate">Start Date</label>
                         </div>
                         <div class="form-check">
@@ -443,14 +463,13 @@
                             <label class="form-check-label" for="colEndDate">End Date</label>
                         </div>
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="Invoice Status" id="colInvoiceStatus"
-                                checked>
+                            <input class="form-check-input" type="checkbox" value="Invoice Status" id="colInvoiceStatus" checked>
                             <label class="form-check-label" for="colInvoiceStatus">Invoice Status</label>
                         </div>
 
-
-
-
+                        
+                        
+                        
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -516,13 +535,10 @@
                     <button type="button" class="btn btn-danger remove-task">Remove Task</button>
                 </div>
             `;
-                    $('#tasks').append(taskItem);
-                });
-            } else {
-                // If no tasks, show an empty task input
-                addNewTask();
-            }
-        }
+            $('#tasks').append(taskItem);
+        });
+    }
+}
 
         // Function to add a new empty task input (useful for both new project and editing empty task list)
         function addNewTask() {
@@ -658,87 +674,88 @@
         document.getElementById('statusFilter').addEventListener('change', applyFilters);
         document.getElementById('paymentStatusFilter').addEventListener('change', applyFilters);
 
-        function downloadSelectedColumns() {
-            console.log("Starting download process...");
+    function downloadSelectedColumns() {
+    console.log("Starting download process...");
 
-            // Fetch all projects data from the server
-            $.get('/get-projects', function (allProjects) {
-                console.log("Data fetched:", allProjects);
+    // Fetch all projects data from the server
+    $.get('/get-projects', function(allProjects) {
+        console.log("Data fetched:", allProjects);
 
-                // Get selected columns from checkboxes
-                const selectedColumns = [];
-                const form = document.getElementById('columnSelectionForm');
-                form.querySelectorAll('input[type="checkbox"]:checked').forEach(checkbox => {
-                    selectedColumns.push(checkbox.value);
-                });
+        // Get selected columns from checkboxes
+        const selectedColumns = [];
+        const form = document.getElementById('columnSelectionForm');
+        form.querySelectorAll('input[type="checkbox"]:checked').forEach(checkbox => {
+            selectedColumns.push(checkbox.value);
+        });
 
-                // Map column names to project properties
-                const columnMap = {
-                    "ID": "id",
-                    "Customer": "customer",
-                    "Description": "description",
-                    "Status": "status",
-                    "Vendor Name": "vendorName",
-                    "Status Payment": "statusPayment",
-                    "Due Date": "dueDate",
-                    "PO Number": "poNumber",
-                    "Quantity": "quantity",
-                    "Start Date": "startDate",  // New entry
-                    "End Date": "endDate",       // New entry
-                    "Invoice Status": "invoiceStatus" // New entry for Invoice Status
-                };
+        // Map column names to project properties
+        const columnMap = {
+            "ID": "id",
+            "Customer": "customer",
+            "Description": "description",
+            "Status": "status",
+            "Vendor Name": "vendorName",
+            "Status Payment": "statusPayment",
+            "Due Date": "dueDate",
+            "PO Number": "poNumber",
+            "Quantity": "quantity",
+            "Start Date": "startDate",  // New entry
+            "End Date": "endDate",       // New entry
+            "Invoice Status": "invoiceStatus",
+            "Invoice Date": "invoiceDate"  
+        };
 
-                // Apply any filters to export only relevant rows
-                const filterValue = document.getElementById('filterInput').value.toLowerCase();
-                const statusFilter = document.getElementById('statusFilter').value;
-                const paymentStatusFilter = document.getElementById('paymentStatusFilter').value;
+        // Apply any filters to export only relevant rows
+        const filterValue = document.getElementById('filterInput').value.toLowerCase();
+        const statusFilter = document.getElementById('statusFilter').value;
+        const paymentStatusFilter = document.getElementById('paymentStatusFilter').value;
 
-                const filteredData = allProjects.filter(project => {
-                    let matches = true;
+        const filteredData = allProjects.filter(project => {
+            let matches = true;
 
-                    if (filterValue && !project.customer.toLowerCase().includes(filterValue)) {
-                        matches = false;
-                    }
-                    if (statusFilter && project.status !== statusFilter) {
-                        matches = false;
-                    }
-                    if (paymentStatusFilter && project.statusPayment !== paymentStatusFilter) {
-                        matches = false;
-                    }
-                    return matches;
-                });
+            if (filterValue && !project.customer.toLowerCase().includes(filterValue)) {
+                matches = false;
+            }
+            if (statusFilter && project.status !== statusFilter) {
+                matches = false;
+            }
+            if (paymentStatusFilter && project.statusPayment !== paymentStatusFilter) {
+                matches = false;
+            }
+            return matches;
+        });
 
-                // Prepare data for Excel export
-                const data = [];
-                const headerRow = selectedColumns;
-                data.push(headerRow);
+        // Prepare data for Excel export
+        const data = [];
+        const headerRow = selectedColumns;
+        data.push(headerRow);
 
-                filteredData.forEach(project => {
-                    const row = selectedColumns.map(col => project[columnMap[col]] || "N/A");
-                    data.push(row);
-                });
+        filteredData.forEach(project => {
+            const row = selectedColumns.map(col => project[columnMap[col]] || "N/A");
+            data.push(row);
+        });
 
-                console.log("Data to export:", data); // Log data before exporting
+        console.log("Data to export:", data); // Log data before exporting
 
-                // Create worksheet and workbook
-                const worksheet = XLSX.utils.aoa_to_sheet(data);
-                const workbook = XLSX.utils.book_new();
-                XLSX.utils.book_append_sheet(workbook, worksheet, "Project Data");
+        // Create worksheet and workbook
+        const worksheet = XLSX.utils.aoa_to_sheet(data);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Project Data");
 
-                // Export workbook to Excel
-                XLSX.writeFile(workbook, "Filtered_Project_Data.xlsx");
+        // Export workbook to Excel
+        XLSX.writeFile(workbook, "Filtered_Project_Data.xlsx");
 
-                // Close the modal
-                $('#columnSelectionModal').modal('hide');
-            }).fail(function () {
-                alert("Failed to retrieve project data.");
-            });
-        }
+        // Close the modal
+        $('#columnSelectionModal').modal('hide');
+    }).fail(function() {
+        alert("Failed to retrieve project data.");
+    });
+}
 
-        function formatDate(dateString) {
-            const [year, month, day] = dateString.split('-');
-            return `${day}-${month}-${year}`;
-        }
+    function formatDate(dateString) {
+        const [year, month, day] = dateString.split('-');
+        return `${day}-${month}-${year}`;
+    }
 
 
 

@@ -12,7 +12,8 @@
     "statusPayment": "Not Paid",
     "dueDate": "",
     "quantity": "20000",
-    "invoiceStatus": "Complete"
+    "invoiceStatus": "Complete",
+    "invoiceDate": "2024-11-16"
   },
   {
     "id": 2,
