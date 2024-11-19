@@ -77,9 +77,8 @@ thead th {
             <!-- Button Container for Add New Project and Manage Project Buttons -->
             <div class="d-flex justify-content-end align-items-center my-3">
 
-
-                <input type="text" id="filterInput" class="form-control mr-3" placeholder="Filter by Customer"
-                    style="max-width: 200px;"> <!-- Status Filter Dropdown -->
+                <input type="text" id="filterIdInput" class="form-control mr-3" placeholder="Filter by ID" style="max-width: 200px;">
+                <input type="text" id="filterInput" class="form-control mr-3" placeholder="Filter by Customer"style="max-width: 200px;"> 
                 <select id="statusFilter" class="form-control mr-3" style="max-width: 150px;">
                     <option value="">Filter by Status</option>
                     <option value="Active">Active</option>
@@ -630,7 +629,7 @@ document.getElementById("manageProjectBtn").addEventListener("click", function (
             const rows = document.querySelectorAll('tbody tr');
 
             rows.forEach(row => {
-                const nameCell = row.querySelector('td:nth-child(3)'); // Adjust if Name column position changes
+                const nameCell = row.querySelector('td:nth-child(2)'); // Adjust if Name column position changes
                 if (nameCell) {
                     const nameText = nameCell.textContent.toLowerCase();
                     if (nameText.includes(filterValue)) {
@@ -645,17 +644,25 @@ document.getElementById("manageProjectBtn").addEventListener("click", function (
 
         // Filter function to apply all filters to the table
         function applyFilters() {
+            const filterIdValue = document.getElementById('filterIdInput').value.toLowerCase();
             const filterValue = document.getElementById('filterInput').value.toLowerCase();
             const statusFilter = document.getElementById('statusFilter').value;
             const invoiceStatusFilter = document.getElementById('invoiceStatusFilter').value;
             const rows = document.querySelectorAll('tbody tr');
 
             rows.forEach(row => {
-                const nameCell = row.querySelector('td:nth-child(3)');
-                const statusCell = row.querySelector('td:nth-child(7)');
-                const invoiceStatusCell = row.querySelector('td:nth-child(9)');
+                const idCell = row.querySelector('td:nth-child(1)');
+                const nameCell = row.querySelector('td:nth-child(2)');
+                const statusCell = row.querySelector('td:nth-child(6)');
+                const invoiceStatusCell = row.querySelector('td:nth-child(8)');
 
                 let isVisible = true;
+
+                 // Filter by ID
+                if (idCell && filterIdValue) {
+                const idText = idCell.textContent.toLowerCase();
+                isVisible = isVisible && idText.includes(filterIdValue);
+                }
 
                 // Filter by project name (search)
                 if (nameCell && filterValue) {
@@ -681,6 +688,7 @@ document.getElementById("manageProjectBtn").addEventListener("click", function (
         }
 
         // Event listeners for search and filter fields
+        document.getElementById('filterIdInput').addEventListener('input', applyFilters);
         document.getElementById('filterInput').addEventListener('input', applyFilters);
         document.getElementById('statusFilter').addEventListener('change', applyFilters);
         document.getElementById('invoiceStatusFilter').addEventListener('change', applyFilters);
@@ -717,12 +725,17 @@ document.getElementById("manageProjectBtn").addEventListener("click", function (
         };
 
         // Apply any filters to export only relevant rows
+        const filterIdValue = document.getElementById('filterIdInput').value.toLowerCase();
         const filterValue = document.getElementById('filterInput').value.toLowerCase();
         const statusFilter = document.getElementById('statusFilter').value;
         const invoiceStatusFilter = document.getElementById('invoiceStatusFilter').value;
 
         const filteredData = allProjects.filter(project => {
             let matches = true;
+
+            if (filterIdValue && !project.id.toLowerCase().includes(filterIdValue)) {
+            matches = false;
+            }
 
             if (filterValue && !project.customer.toLowerCase().includes(filterValue)) {
                 matches = false;

@@ -52,6 +52,12 @@ app.get('/', (req, res) => {
     res.render('index', { projects });
 });
 
+app.get('/get-projects', (req, res) => {
+    const projects = loadProjects(); // Load from JSON file or database
+    res.json(projects); // Return as JSON response
+});
+
+
 // Route to add or edit a project
 app.post('/add-project', (req, res) => {
     let projects = loadProjects();
