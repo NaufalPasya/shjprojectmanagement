@@ -223,3 +223,17 @@ button[type="submit"]:hover {
     gap: 10px;  /* Space between buttons */
     margin-top: 20px;  /* Space above buttons */
 }
+.po-number-column{
+    width: 100px;
+    text-align: center;
+    white-space: normal;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.invoice-column{
+    width: 75px;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

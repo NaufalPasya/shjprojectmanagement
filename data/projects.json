@@ -7,9 +7,9 @@
     "startDate": "2024-11-01",
     "endDate": "2024-11-08",
     "tasks": [],
-    "poNumber": "12",
-    "vendorName": "",
-    "statusPayment": "Not Paid",
+    "poNumber": "200-02AB200-02B/N0CI/XI/2024",
+    "vendorName": "SHJ",
+    "statusPayment": "Paid",
     "dueDate": "",
     "quantity": "20000",
     "invoiceStatus": "Complete",
@@ -28,12 +28,13 @@
         "status": "Done"
       }
     ],
-    "poNumber": "",
-    "vendorName": "",
-    "statusPayment": "Not Paid",
+    "poNumber": "4501701173",
+    "vendorName": "PMA",
+    "statusPayment": "Overdue",
     "dueDate": "",
-    "quantity": "",
-    "invoiceStatus": "Document Sent to Finance"
+    "quantity": "2500000",
+    "invoiceStatus": "Complete",
+    "invoiceDate": "2024-11-30"
   },
   {
     "id": "SHJ-0003",
