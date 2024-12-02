@@ -234,12 +234,14 @@
                                             <li class="list-group-item"><strong>Invoice Date:</strong>
                                                 <%= project.invoiceDate || "N/A" %>
                                             </li>
+                                            <li class="list-group-item"><strong>Invoice Number:</strong> <%= project.invoiceNumber || "N/A" %></li>
                                             <li class="list-group-item"><strong>PO Number:</strong>
                                                 <%= project.poNumber || "N/A" %>
                                             </li>
                                             <li class="list-group-item"><strong>Vendor Name:</strong>
                                                 <%= project.vendorName || "N/A" %>
                                             </li>
+                                            <li class="list-group-item"><strong>PR Number:</strong> <%= project.prNumber || "N/A" %></li>
                                             <li class="list-group-item"><strong>Quantity:</strong>
                                                 <%= project.quantity || "N/A" %>
                                             </li>
@@ -354,6 +356,10 @@
                             <input type="date" class="form-control" id="invoiceDate" name="invoiceDate">
                         </div>
                         <div class="form-group">
+                            <label for="invoiceNumber">Invoice Number</label>
+                            <input type="text" class="form-control" id="invoiceNumber" name="invoiceNumber">
+                        </div>
+                        <div class="form-group">
                             <label for="poNumber">PO Number</label>
                             <input type="text" class="form-control" id="poNumber" name="poNumber">
                         </div>
@@ -361,7 +367,10 @@
                             <label for="vendorName">Vendor Name</label>
                             <input type="text" class="form-control" id="vendorName" name="vendorName">
                         </div>
-
+                        <div class="form-group">
+                            <label for="prNumber">PR Number</label>
+                            <input type="text" class="form-control" id="prNumber" name="prNumber">
+                        </div>
                         <div class="form-group">
                             <label for="quantity">Quantity</label>
                             <input type="number" class="form-control" id="quantity" name="quantity" min="1">
@@ -481,6 +490,14 @@
                             <label class="form-check-label" for="colEndDate">End Date</label>
                         </div>
                         <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="Invoice Number" id="colInvoiceNumber" checked>
+                            <label class="form-check-label" for="colInvoiceNumber">Invoice Number</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="PR Number" id="colPRNumber" checked>
+                            <label class="form-check-label" for="colPRNumber">PR Number</label>
+                        </div>
+                        <div class="form-check">
                             <input class="form-check-input" type="checkbox" value="Invoice Status" id="colInvoiceStatus"
                                 checked>
                             <label class="form-check-label" for="colInvoiceStatus">Invoice Status</label>
@@ -538,6 +555,8 @@ function editProject(project) {
     $('#endDate').val(project.endDate);
     $('#invoiceStatus').val(project.invoiceStatus || "Not Yet"); // Default to "Not Yet"
     $('#invoiceDate').val(project.invoiceDate || ""); // Populate or set blank
+    $('#invoiceNumber').val(project.invoiceNumber || ""); // Populate Invoice Number
+    $('#prNumber').val(project.prNumber || "");  
     $('#poNumber').val(project.poNumber || ""); // Default to empty if missing
     $('#vendorName').val(project.vendorName || ""); // Default to empty if missing
     $('#dueDate').val(project.dueDate || ""); // Populate or set blank
@@ -641,24 +660,8 @@ function editProject(project) {
             selectedRow = row;
             selectedRow.classList.add("table-active");
 
-            // Enable the Manage Project button
-            document.getElementById("manageProjectBtn").disabled = false;
         }
 
-        // Modify the Manage Project button click to use the selected project ID
-        document.getElementById("manageProjectBtn").addEventListener("click", function () {
-            if (selectedProjectId) {
-                // Fetch project data for editing
-                $.get(`/view-project/${selectedProjectId}`, function (data) {
-                    editProject(data); // Populate the edit modal with the selected project data
-                    $('#projectModal').modal('show'); // Show the edit modal
-                }).fail(function () {
-                    alert("Failed to retrieve project data.");
-                });
-            } else {
-                alert("Please select a project to manage.");
-            }
-        });
 
         // Filter projects by name
         document.getElementById('filterInput').addEventListener('input', function () {
@@ -690,8 +693,8 @@ function editProject(project) {
             rows.forEach(row => {
                 const idCell = row.querySelector('td:nth-child(1)');
                 const nameCell = row.querySelector('td:nth-child(2)');
-                const statusCell = row.querySelector('td:nth-child(6)');
-                const invoiceStatusCell = row.querySelector('td:nth-child(8)');
+                const statusCell = row.querySelector('td:nth-child(7)');
+                const invoiceStatusCell = row.querySelector('td:nth-child(9)');
 
                 let isVisible = true;
 
@@ -756,7 +759,9 @@ function editProject(project) {
                     "PO Number": "poNumber",
                     "Quantity": "quantity",
                     "Start Date": "startDate",  // New entry
-                    "End Date": "endDate",       // New entry
+                    "End Date": "endDate",  
+                    "Invoice Number": "invoiceNumber", // New Field
+                     "PR Number": "prNumber",       // New entry
                     "Invoice Status": "invoiceStatus",
                     "Invoice Date": "invoiceDate"
                 };

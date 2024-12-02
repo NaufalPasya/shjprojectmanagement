@@ -61,7 +61,7 @@ app.get('/get-projects', (req, res) => {
 // Route to add or edit a project
 app.post('/add-project', (req, res) => {
     let projects = loadProjects();
-    const { customer, description, status, startDate, endDate, taskName, taskStatus, poNumber, vendorName, statusPayment, dueDate, quantity, invoiceStatus, invoiceDate } = req.body;
+    const { customer, description, status, startDate, endDate, taskName, taskStatus, poNumber, vendorName, statusPayment, dueDate, quantity, invoiceStatus, invoiceDate, invoiceNumber, prNumber } = req.body;
 
     let tasks = [];
     if (taskName && taskStatus) {
@@ -86,6 +86,8 @@ app.post('/add-project', (req, res) => {
                 endDate,
                 poNumber: poNumber || "",
                 vendorName: vendorName || "",
+                invoiceNumber: invoiceNumber || "", // New Field
+                prNumber: prNumber || "",    
                 statusPayment: statusPayment || "Not Paid",
                 dueDate: dueDate || "",
                 quantity: quantity || "",
@@ -106,6 +108,8 @@ app.post('/add-project', (req, res) => {
             endDate,
             poNumber: poNumber || "",
             vendorName: vendorName || "",
+            invoiceNumber: invoiceNumber || "", // New Field
+            prNumber: prNumber || "",    
             statusPayment: statusPayment || "Not Paid",
             dueDate: dueDate || "",
             quantity: quantity || "",
@@ -217,10 +221,15 @@ app.post('/edit-project/:customer', (req, res) => {
             description: req.body.description,
             startDate: req.body.startDate,
             endDate: req.body.endDate,
-            status: req.body.status,
             poNumber: req.body.poNumber || "",
             invoiceStatus: req.body.invoiceStatus || "Not Yet",
-            invoiceDate: req.body.invoiceDate,
+            invoiceDate: req.body.invoiceDate || "",
+            invoiceNumber: req.body.invoiceNumber || "", // New Field
+            prNumber: req.body.prNumber || "",           // New Field
+            vendorName: req.body.vendorName || "",
+            statusPayment: req.body.statusPayment || "Not Paid",
+            dueDate: req.body.dueDate || "",
+            quantity: req.body.quantity || "",
             tasks
         };
 
